@@ -11,7 +11,7 @@ namespace SMS_send_test
     public class SendSms
     {
         private readonly string[] _ports;
-        private readonly Queue<SMSDto> _queue = new();
+        private readonly Queue<SmsDto> _queue = new();
         private readonly SerialPort _serialPort;
 
         public SendSms()
@@ -35,13 +35,13 @@ namespace SMS_send_test
         {
             
         }
-        public void AddSmsToQueue(SMSDto dto)
+        public void AddSmsToQueue(SmsDto dto)
         {
             _queue.Enqueue(dto);
             Console.WriteLine(_queue.Count);
         }
 
-        private async Task SendAsync()
+        private async Task<bool> SendAsync()
         { 
             await Task.Run(async() =>
             {
@@ -76,6 +76,7 @@ namespace SMS_send_test
                     }
                 }
             });
-    }
+            return true;
+        }
     }
 }

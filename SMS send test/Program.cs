@@ -10,7 +10,7 @@ namespace SMS_send_test
         {
             SendSms send = new SendSms();
             Random random = new Random();
-            SMSDto newSms =  new SMSDto()
+            SmsDto newSms =  new SmsDto()
             {
                 Nationality = "+48",
                 PhoneNumber = "661368411",
@@ -18,7 +18,7 @@ namespace SMS_send_test
             };
             send.AddSmsToQueue(newSms);
             Console.WriteLine("Testowa wiadomość wrzucana po wywołaniu metody AddToQueue");
-            SMSDto newSms1 =  new SMSDto()
+            SmsDto newSms1 =  new SmsDto()
             {
                 Nationality = "+48",
                 PhoneNumber = "661368411",
@@ -26,7 +26,7 @@ namespace SMS_send_test
             };
             send.AddSmsToQueue(newSms1);
             Console.WriteLine("Testowa wiadomość wrzucana po wywołaniu metody AddToQueue");
-            SMSDto newSms2 =  new SMSDto()
+            SmsDto newSms2 =  new SmsDto()
             {
                 Nationality = "+48",
                 PhoneNumber = "661368411",
@@ -34,7 +34,7 @@ namespace SMS_send_test
             };
             send.AddSmsToQueue(newSms2);
             Console.WriteLine("Testowa wiadomość wrzucana po wywołaniu metody AddToQueue");
-            SMSDto newSms3 =  new SMSDto()
+            SmsDto newSms3 =  new SmsDto()
             {
                 Nationality = "+48",
                 PhoneNumber = "661368411",
@@ -43,7 +43,7 @@ namespace SMS_send_test
             send.AddSmsToQueue(newSms3);
             Console.WriteLine("Testowa wiadomość wrzucana po wywołaniu metody AddToQueue");
             Console.Read();
-            SMSDto newSms4 =  new SMSDto()
+            SmsDto newSms4 =  new SmsDto()
             {
                 Nationality = "+48",
                 PhoneNumber = "661368411",

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO.Ports;
 using System.Linq;
 using System.Threading;
@@ -7,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace SMS_send_test
 {
-    public class SendSmsClass
+    public class SendSms
     {
         private readonly string[] _ports;
         private readonly Queue<SMSDto> _queue = new();
         private readonly SerialPort _serialPort;
 
-        public SendSmsClass()
+        public SendSms()
         {
             var serialPort = new SerialPort();
             var ports = SerialPort.GetPortNames();
@@ -27,20 +28,20 @@ namespace SMS_send_test
             _serialPort = serialPort;
             _ports = ports;
 
-            SendSms();
+            SendAsync();
         }
 
-        ~SendSmsClass()
+        ~SendSms()
         {
             
         }
-        public void AddToQueueSms(SMSDto dto)
+        public void AddSmsToQueue(SMSDto dto)
         {
             _queue.Enqueue(dto);
             Console.WriteLine(_queue.Count);
         }
 
-        private async Task SendSms()
+        private async Task SendAsync()
         { 
             await Task.Run(async() =>
             {
@@ -49,6 +50,10 @@ namespace SMS_send_test
                     if (_queue.Count > 0)
                     {
                         var dto = _queue.Dequeue();
+                        if (dto.VerificationCode.Length > 160)
+                        {
+                            return false;
+                        }
                         _serialPort.PortName = _ports.LastOrDefault();
                         _serialPort.BaudRate = 9600;
                         _serialPort.ReadTimeout = 500;
@@ -59,7 +64,7 @@ namespace SMS_send_test
                             _serialPort.WriteLine("AT+CMGF = 1");
                             await Task.Delay(3000);
                             _serialPort.Write("AT+CMGS=\"" + dto.PhoneNumber + "\"\r\n");
-                            await Task.Delay(500);
+                            await Task.Delay(1000);
                             _serialPort.Write("Your verification code: " + dto.VerificationCode.Insert(4,"-") + "\x1A");
                             var result = _serialPort.ReadExisting();
                             Console.WriteLine(result);

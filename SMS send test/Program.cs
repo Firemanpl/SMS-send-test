@@ -8,7 +8,7 @@ namespace SMS_send_test
     {
         static void Main(string[] args)
         {
-            SendSmsClass send = new SendSmsClass();
+            SendSms send = new SendSms();
             Random random = new Random();
             SMSDto newSms =  new SMSDto()
             {
@@ -16,7 +16,7 @@ namespace SMS_send_test
                 PhoneNumber = "661368411",
                 VerificationCode = random.Next(10000000,99999999).ToString(),
             };
-            send.AddToQueueSms(newSms);
+            send.AddSmsToQueue(newSms);
             Console.WriteLine("Testowa wiadomość wrzucana po wywołaniu metody AddToQueue");
             SMSDto newSms1 =  new SMSDto()
             {
@@ -24,7 +24,7 @@ namespace SMS_send_test
                 PhoneNumber = "661368411",
                 VerificationCode = random.Next(10000000,99999999).ToString(),
             };
-            send.AddToQueueSms(newSms1);
+            send.AddSmsToQueue(newSms1);
             Console.WriteLine("Testowa wiadomość wrzucana po wywołaniu metody AddToQueue");
             SMSDto newSms2 =  new SMSDto()
             {
@@ -32,7 +32,7 @@ namespace SMS_send_test
                 PhoneNumber = "661368411",
                 VerificationCode = random.Next(10000000,99999999).ToString(),
             };
-            send.AddToQueueSms(newSms2);
+            send.AddSmsToQueue(newSms2);
             Console.WriteLine("Testowa wiadomość wrzucana po wywołaniu metody AddToQueue");
             SMSDto newSms3 =  new SMSDto()
             {
@@ -40,7 +40,7 @@ namespace SMS_send_test
                 PhoneNumber = "661368411",
                 VerificationCode = random.Next(10000000,99999999).ToString(),
             };
-            send.AddToQueueSms(newSms3);
+            send.AddSmsToQueue(newSms3);
             Console.WriteLine("Testowa wiadomość wrzucana po wywołaniu metody AddToQueue");
             Console.Read();
             SMSDto newSms4 =  new SMSDto()
@@ -49,7 +49,7 @@ namespace SMS_send_test
                 PhoneNumber = "661368411",
                 VerificationCode = random.Next(10000000,99999999).ToString(),
             };
-            send.AddToQueueSms(newSms4);
+            send.AddSmsToQueue(newSms4);
             Console.WriteLine("Testowa wiadomość wrzucana po wywołaniu metody AddToQueue");
         }
     }

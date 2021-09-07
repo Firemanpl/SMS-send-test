@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SMS_send_test
@@ -9,8 +10,9 @@ namespace SMS_send_test
     public class SendSmsClass
     {
         private readonly string[] _ports;
+        private readonly Queue<SMSDto> _queue = new();
         private readonly SerialPort _serialPort;
-        private readonly Queue<SMSDto> queue = new Queue<SMSDto>();
+
         public SendSmsClass()
         {
             var serialPort = new SerialPort();
@@ -26,20 +28,29 @@ namespace SMS_send_test
             if (!exist) throw new NotImplementedException("Modem 3G/4G is not plugged into usb.");
             _serialPort = serialPort;
             _ports = ports;
-            
-        }
-        public async Task AddToQueue(SMSDto dto)
-        {
-            queue.Enqueue(dto);
-            Console.WriteLine(queue.Count);
-            await SendSms();
         }
 
-        private async Task SendSms()
+        public void AddToQueue(SMSDto dto)
         {
-            var dto = queue.Dequeue();
-            
-            // _serialPort.PortName = _ports.LastOrDefault();
+            _queue.Enqueue(dto);
+            Console.WriteLine(_queue.Count);
+             SendSms();
+        }
+
+        private void SendSms()
+        { 
+            Task.Run(async() =>
+            {
+                if (_queue.Count > 0)
+                {
+                    var dto = _queue.Dequeue();
+                    Console.WriteLine(dto.Nationality);
+                    Console.WriteLine(dto.PhoneNumber);
+                    Console.WriteLine(dto.VerificationCode.Insert(4, "-")); 
+                    await Task.Delay(10000);
+
+                }
+                // _serialPort.PortName = _ports.LastOrDefault();
                 // _serialPort.BaudRate = 9600;
                 // _serialPort.ReadTimeout = 500;
                 // _serialPort.WriteTimeout = 500;
@@ -54,13 +65,7 @@ namespace SMS_send_test
                 //     Console.WriteLine(_serialPort.ReadExisting());
                 //     _serialPort.Close();
                 // }
-                //if (queue.Count>0)
-                //{
-                    await Task.Delay(1000);
-                    Console.WriteLine(dto.Nationality);
-                    Console.WriteLine(dto.PhoneNumber);
-                    Console.WriteLine(dto.VerificationCode.Insert(4," - "));
-              //  }
-        }
+            });
+    }
     }
 }

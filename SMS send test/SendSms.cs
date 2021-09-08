@@ -35,25 +35,27 @@ namespace SMS_send_test
         {
             
         }
-        public void AddSmsToQueue(SmsDto dto)
+        public bool AddSmsToQueue(SmsDto dto)
         {
+            if (dto.VerificationCode.Length > 160)
+            {
+                return false;
+            }
             _queue.Enqueue(dto);
-            Console.WriteLine(_queue.Count);
+            //Console.WriteLine(_queue.Count);
+            return true;
         }
 
-        private async Task<bool> SendAsync()
+        private void SendAsync()
         { 
-            await Task.Run(async() =>
+            Task.Run(async() =>
             {
                 while (true)
                 {
                     if (_queue.Count > 0)
                     {
                         var dto = _queue.Dequeue();
-                        if (dto.VerificationCode.Length > 160)
-                        {
-                            return false;
-                        }
+
                         _serialPort.PortName = _ports.LastOrDefault();
                         _serialPort.BaudRate = 9600;
                         _serialPort.ReadTimeout = 500;
@@ -66,17 +68,16 @@ namespace SMS_send_test
                             _serialPort.Write("AT+CMGS=\"" + dto.PhoneNumber + "\"\r\n");
                             await Task.Delay(1000);
                             _serialPort.Write("Your verification code: " + dto.VerificationCode.Insert(4,"-") + "\x1A");
-                            var result = _serialPort.ReadExisting();
-                            Console.WriteLine(result);
-                            if (result.Contains("ERROR"))
-                                Console.WriteLine("Something went wrong!");
+                           // var result = _serialPort.ReadExisting();
+                           // Console.WriteLine(result);
+                           // if (result.Contains("ERROR"))
+                              //  Console.WriteLine("Something went wrong!");
                             //await Task.Delay(2000);
                             _serialPort.Close();
                         }
                     }
                 }
             });
-            return true;
         }
     }
 }
